@@ -15,6 +15,7 @@ async function execute(interaction: any) {
   await interaction.deferReply();
 
   try {
+    console.log("Processing question:", question);
     const response = await askDeepQuestion(question); // Process the question
     if (response.content?.length! < 1024) {
       await interaction.editReply({
