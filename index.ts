@@ -133,12 +133,7 @@ client.on("messageCreate", async (message) => {
     }
     message.reply({
       content: content,
-      files: [
-        {
-          attachment: Buffer.from(reply!, "utf-8"),
-          name: "response.md",
-        },
-      ],
+      files: attachments,
     });
   }
 });
