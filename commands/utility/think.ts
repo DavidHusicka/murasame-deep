@@ -8,7 +8,7 @@ const data = new SlashCommandBuilder()
     option
       .setName("question")
       .setDescription("Question you are asking")
-      .setRequired(true),
+      .setRequired(true)
   );
 async function execute(interaction: any) {
   const question: string = interaction.options.getString("question");
@@ -23,7 +23,7 @@ async function execute(interaction: any) {
           {
             attachment: Buffer.from(
               response.reasoning_content || "No thoughts",
-              "utf-8",
+              "utf-8"
             ),
             name: "reasoning.txt",
           },
@@ -32,7 +32,7 @@ async function execute(interaction: any) {
     } else {
       await interaction.editReply({
         content:
-          "I got a little carried away so here's the reply as a chokers file, tehe.",
+          "I got a little carried away so here's the reply as a chonkers file, tehe.",
         files: [
           {
             attachment: Buffer.from(response.content!, "utf-8"),
@@ -41,7 +41,7 @@ async function execute(interaction: any) {
           {
             attachment: Buffer.from(
               response.reasoning_content || "No thoughts",
-              "utf-8",
+              "utf-8"
             ),
             name: "reasoning.txt",
           },
@@ -51,7 +51,7 @@ async function execute(interaction: any) {
   } catch (error) {
     console.error(error);
     await interaction.editReply(
-      "Something went wrong while processing your question.",
+      "Something went wrong while processing your question."
     );
   }
 }

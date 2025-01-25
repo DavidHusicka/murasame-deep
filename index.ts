@@ -105,6 +105,19 @@ client.on("messageCreate", async (message) => {
     }
     message.channel.sendTyping();
     const reply = await askQuestion(messageContent);
-    message.reply(reply || "Tehe");
+    if (reply!.length < 1000) {
+      message.reply(reply!);
+    } else {
+      message.reply({
+        content:
+          "I got a little carried away so here's the reply as a chonkers file, tehe.",
+        files: [
+          {
+            attachment: Buffer.from(reply!, "utf-8"),
+            name: "response.md",
+          },
+        ],
+      });
+    }
   }
 });
