@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { token } from "./config.json";
 import commands from "./commands/commands";
-import { askQuestion } from "./commands/gpt";
+import { askDeepQuestion, askQuestion } from "./commands/gpt";
 
 declare module "discord.js" {
   export interface Client {
@@ -104,20 +104,41 @@ client.on("messageCreate", async (message) => {
       messageContent = messageContent.replace(`<@!${id}>`, username);
     }
     message.channel.sendTyping();
-    const reply = await askQuestion(messageContent);
-    if (reply!.length < 1000) {
-      message.reply(reply!);
+    let reply: string;
+    let thoughts: string | undefined;
+    if (messageContent.startsWith("think")) {
+      const rep = (await askDeepQuestion(messageContent.slice(6))) || "";
+      reply = rep.content || "";
+      thoughts = rep.reasoning_content;
     } else {
-      message.reply({
-        content:
-          "I got a little carried away so here's the reply as a chonkers file, tehe.",
-        files: [
-          {
-            attachment: Buffer.from(reply!, "utf-8"),
-            name: "response.md",
-          },
-        ],
+      reply = (await askQuestion(messageContent)) || "";
+    }
+    let attachments = [];
+    let content: string;
+    if (reply!.length < 1000) {
+      content = reply!;
+    } else {
+      content =
+        "I got a little carried away so here's the reply as a chonkers file, tehe.";
+      attachments.push({
+        attachment: Buffer.from(reply!, "utf-8"),
+        name: "response.md",
       });
     }
+    if (thoughts) {
+      attachments.push({
+        attachment: Buffer.from(thoughts, "utf-8"),
+        name: "reasoning.txt",
+      });
+    }
+    message.reply({
+      content: content,
+      files: [
+        {
+          attachment: Buffer.from(reply!, "utf-8"),
+          name: "response.md",
+        },
+      ],
+    });
   }
 });
