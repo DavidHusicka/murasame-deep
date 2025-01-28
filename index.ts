@@ -104,36 +104,41 @@ client.on("messageCreate", async (message) => {
       messageContent = messageContent.replace(`<@!${id}>`, username);
     }
     message.channel.sendTyping();
-    let reply: string;
-    let thoughts: string | undefined;
-    if (messageContent.startsWith("think")) {
-      const rep = (await askDeepQuestion(messageContent.slice(6))) || "";
-      reply = rep.content || "";
-      thoughts = rep.reasoning_content;
-    } else {
-      reply = (await askQuestion(messageContent)) || "";
-    }
-    let attachments = [];
-    let content: string;
-    if (reply!.length < 1000) {
-      content = reply!;
-    } else {
-      content =
-        "I got a little carried away so here's the reply as a chonkers file, tehe.";
-      attachments.push({
-        attachment: Buffer.from(reply!, "utf-8"),
-        name: "response.md",
+    try {
+      let reply: string;
+      let thoughts: string | undefined;
+      if (messageContent.startsWith("think")) {
+        const rep = (await askDeepQuestion(messageContent.slice(6))) || "";
+        reply = rep.content || "";
+        thoughts = rep.reasoning_content;
+      } else {
+        reply = (await askQuestion(messageContent)) || "";
+      }
+      let attachments = [];
+      let content: string;
+      if (reply!.length < 1000) {
+        content = reply!;
+      } else {
+        content =
+          "I got a little carried away so here's the reply as a chonkers file, tehe.";
+        attachments.push({
+          attachment: Buffer.from(reply!, "utf-8"),
+          name: "response.md",
+        });
+      }
+      if (thoughts) {
+        attachments.push({
+          attachment: Buffer.from(thoughts, "utf-8"),
+          name: "reasoning.txt",
+        });
+      }
+      message.reply({
+        content: content,
+        files: attachments,
       });
+    } catch (error) {
+      console.error(error);
+      message.reply("There was an error while processing your message!");
     }
-    if (thoughts) {
-      attachments.push({
-        attachment: Buffer.from(thoughts, "utf-8"),
-        name: "reasoning.txt",
-      });
-    }
-    message.reply({
-      content: content,
-      files: attachments,
-    });
   }
 });

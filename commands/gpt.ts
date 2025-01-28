@@ -1,10 +1,10 @@
 import OpenAI from "openai";
-import { deepseekApiToken } from "../config.json";
+import { deepSeekApiToken } from "../config.json";
 import { roleMention } from "discord.js";
 
 const openai = new OpenAI({
   baseURL: "https://api.deepseek.com",
-  apiKey: deepseekApiToken,
+  apiKey: deepSeekApiToken,
 });
 
 const model: "deepseek-chat" | "deepseek-reasoner" = "deepseek-chat";
